@@ -13,7 +13,7 @@
   export default {
     props: {
       itemType: String,
-      binTypes: Array, // Recebe os tipos de lixeira onde o item pode ser colocado
+      binTypes: Array,
     },
     data() {
       return {
@@ -37,27 +37,26 @@
       stopDragging() {
         this.isDragging = false;
   
-        // Verificar colisão com as lixeiras
         const trashItemRect = this.$el.getBoundingClientRect();
         for (const binType of this.binTypes) {
+            
           const bin = document.querySelector(`.trash-bin.${binType}`);
           const binRect = bin.getBoundingClientRect();
+
           if (
             trashItemRect.left >= binRect.left &&
-            trashItemRect.right <= binRect.right &&
+            trashItemRect.right <= binRect.right && 
             trashItemRect.top >= binRect.top &&
             trashItemRect.bottom <= binRect.bottom
           ) {
-            // Item colocado na lixeira correta!
-            this.$emit('itemDropped', this.itemType);
-            break; // Encerra o loop após encontrar a lixeira correta
+            this.$emit('itemDropped', binType);
+            return; // Encerra a verificação após encontrar a lixeira correta
           }
         }
       },
     },
   };
   </script>
-  
   
   <style scoped>
   .trash-item {
@@ -70,33 +69,29 @@
     cursor: grab;
   }
   
+  /* Estilos para diferentes tipos de itens */
   .bottle {
     background-color: #4caf50;
-    /* Estilo da garrafa */
   }
   
   .plastic {
     background-color: #4caf50;
-    /* Estilo do plástico */
   }
   
   .cup {
     background-color: #4caf50;
-    /* Estilo do copo */
   }
   
   .pizza {
     background-color: #ff9800;
-    /* Estilo da pizza */
   }
   
   .cookie {
     background-color: #ff9800;
-    /* Estilo do biscoito */
   }
   
   .burger {
     background-color: #ff9800;
-    /* Estilo do hambúrguer */
   }
   </style>
+  
