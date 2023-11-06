@@ -1,78 +1,83 @@
 <template>
-
-  <div class="game-screen ">
-    <div class="score">Score: {{ score }}</div>
-
-    <TrashBin binType="recyclable" ref="recyclableBin"/>
-    <TrashBin binType="organic" ref="organicBin"/>
+  <div class="tela-jogo">
+    <div class="pontuacao">Pontuação: {{ pontuacao }}</div>
+    <Lixeira tipoLixo="reciclável" ref="lixoReciclavel" />
+    <Lixeira tipoLixo="orgânico" ref="lixoOrganico" />
     
-    <TrashItem
-      v-for="(item, index) in items"
+    <ItemLixo
+      v-for="(item, index) in itens"
       :key="index"
-      :itemType="item.type"
-      :binTypes="item.binTypes"
-      @itemDropped="handleItemDropped"
+      v-show="!item.removido"
+      :tipoLixo="item.imageURL"
+      :tiposLixeira="item.tiposLixeira"
+      @itemDescartado="lidarItemDescartado(item, index)"
     />
+    
+    <div v-show="mostrarMensagemParabens">
+      Parabéns! Todos os itens foram descartados corretamente!
+    </div>
   </div>
-
 </template>
 
 <script>
-import TrashBin from "@/components/TrashBin.vue";
-import TrashItem from "@/components/TrashItem.vue";
+import Lixeira from "@/components/TrashBin.vue";
+import ItemLixo from "@/components/TrashItem.vue";
 
 export default {
   components: {
-    TrashBin,
-    TrashItem,
+    Lixeira,
+    ItemLixo,
   },
   data() {
     return {
-      items: [
-        { type: "bottle", binTypes: ["recyclable"] },
-        { type: "plastic", binTypes: ["recyclable"] },
-        { type: "cup", binTypes: ["recyclable"] },
-        { type: "pizza", binTypes: ["organic"] },
-        { type: "cookie", binTypes: ["organic"] },
-        { type: "burger", binTypes: ["organic"] },
+      itens: [
+        { tipo: "garrafa", tiposLixeira: ["reciclável"], removido: false, imageURL: require('@/assets/lixos/reciclaveis/garrafa.png') },
+        { tipo: "plástico", tiposLixeira: ["reciclável"], removido: false, imageURL: require('@/assets/lixos/reciclaveis/plastico.png') },
+        { tipo: "copo", tiposLixeira: ["reciclável"], removido: false, imageURL: require('@/assets/lixos/reciclaveis/copo.png') },
+        { tipo: "pizza", tiposLixeira: ["orgânico"], removido: false, imageURL: require('@/assets/lixos/organicos/pizza.png') },
+        { tipo: "biscoito", tiposLixeira: ["orgânico"], removido: false, imageURL: require('@/assets/lixos/organicos/biscoito.png') },
+        { tipo: "hambúrguer", tiposLixeira: ["orgânico"], removido: false, imageURL: require('@/assets/lixos/organicos/hamburguer.png') },
       ],
-      score: 0,
+      pontuacao: 0,
     };
   },
-  methods: {
-    handleItemDropped(binType) {
-      const item = this.items.find(item => item.binTypes.includes(binType));
-      
-        console.log(item.binTypes);
-        console.log(binType);
-        console.log
-
-        if (item.binTypes.includes(binType)) {
-          this.score += 10;
-          console.log(`Item dropped in the correct bin (${binType}). Score: ${this.score}`);
-        } else if(item.binTypes.indexOf(binType) === -1){
-          console.log(`Item dropped in the wrong bin (${binType}). Score: ${this.score}`);
-        }      
+  computed: {
+    mostrarMensagemParabens() {
+      return this.itens.every(item => item.removido);
     },
+  },
+  methods: {
+    lidarItemDescartado(item, index) {
+      const tipoLixeira = item.tiposLixeira[0];
 
-    handleBinAction(binType, itemType){
-      if (binType === 'recyclable') {
-        // Lógica específica para a lixeira recyclable
-        this.recyclableBinAction(itemType);
-      } else if (binType === 'organic') {
-        // Lógica específica para a lixeira organic
-        this.organicBinAction(itemType);
+      if (tipoLixeira === 'reciclável' && item.tiposLixeira.includes(tipoLixeira)) {
+        this.pontuacao += 10;
+        console.log(`Item '${item.tipo}' descartado na lixeira correta (${tipoLixeira}). Pontuação: ${this.pontuacao}`);
+        this.itens[index].removido = true;
+      } else if (tipoLixeira === 'orgânico' && item.tiposLixeira.includes(tipoLixeira)) {
+        this.pontuacao += 10;
+        console.log(`Item '${item.tipo}' descartado na lixeira correta (${tipoLixeira}). Pontuação: ${this.pontuacao}`);
+        this.itens[index].removido = true;
+      } else {
+        console.log(`Item '${item.tipo}' descartado na lixeira errada (${tipoLixeira}). Pontuação: ${this.pontuacao}`);
+      }
+
+      if (this.mostrarMensagemParabens) {
+        console.log('Parabéns! Todos os itens foram descartados corretamente!');
+        // Aqui você pode adicionar outra ação, como exibir um modal ou realizar qualquer outra ação desejada
       }
     },
-    recyclableBinAction(itemType) {
-      // Lógica para a lixeira recyclable
-      console.log(`Recyclable bin action for item type: ${itemType}`);
-      // Faça o que for necessário para este caso
-    },
-    organicBinAction(itemType) {
-      // Lógica para a lixeira organic
-      console.log(`Organic bin action for item type: ${itemType}`);
-      // Faça o que for necessário para este caso
+
+    handleLixoDescartadoNoLugarErrado(item) {
+      const tipoLixeira = item.tiposLixeira[0];
+
+      if (tipoLixeira === 'reciclável' && !item.tiposLixeira.includes(tipoLixeira)) {
+        console.log(`Lixo '${item.tipo}' descartado na lixeira errada (${tipoLixeira}). Pontuação: ${this.pontuacao}`);
+        // Adicione a ação específica se o lixo foi descartado na lixeira errada.
+      } else if (tipoLixeira === 'orgânico' && !item.tiposLixeira.includes(tipoLixeira)) {
+        console.log(`Lixo '${item.tipo}' descartado na lixeira errada (${tipoLixeira}). Pontuação: ${this.pontuacao}`);
+        // Adicione a ação específica se o lixo foi descartado na lixeira errada.
+      }
     },
 
   },
@@ -80,7 +85,7 @@ export default {
 </script>
 
 <style scoped>
-.game-screen {
+.tela-jogo {
   display: flex;
   flex-direction: column;
   align-items: center;
@@ -88,7 +93,7 @@ export default {
   background-color: #f0f0f0;
 }
 
-.score {
+.pontuacao {
   font-size: 24px;
   margin-bottom: 20px;
 }
