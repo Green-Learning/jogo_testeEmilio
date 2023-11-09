@@ -8,7 +8,7 @@
     @mouseup="pararArrastar"
   >
     <!-- {{ tipoLixo }} Adiciona a exibição do nome do item -->
-    <img :src="tipoLixo" alt="Item de Lixo" width="50" height="50" />
+    <img :src="tipoLixo" alt="Item de Lixo" width="60" height="70" />
   </div>
 </template>
 
@@ -21,8 +21,9 @@ export default {
   data() {
     return {
       arrastando: false,
-      posicao: { x: 0, y: 0 },
+      posicao: { x: 1050, y: 400 },
       deslocamento: { x: 0, y: 0 },
+      
     };
   },
   methods: {
@@ -57,6 +58,9 @@ export default {
       }
     },
   },
+
+
+
 };
 </script>
 

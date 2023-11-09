@@ -1,20 +1,29 @@
 <template>
   <div class="tela-jogo">
+
     <div class="pontuacao">Pontuação: {{ pontuacao }}</div>
-    <Lixeira tipoLixo="reciclável" ref="lixoReciclavel" />
-    <Lixeira tipoLixo="orgânico" ref="lixoOrganico" />
+    <div class="lixeiras">
+      <Lixeira tipoLixo="reciclável" ref="lixoReciclavel" />
+      <Lixeira tipoLixo="orgânico" ref="lixoOrganico" />
+    </div>
     
-    <ItemLixo
+    <div class="itens-lixo">
+      <ItemLixo
       v-for="(item, index) in itens"
       :key="index"
       v-show="!item.removido"
       :tipoLixo="item.imageURL"
       :tiposLixeira="item.tiposLixeira"
       @itemDescartado="lidarItemDescartado(item, index)"
+      
     />
+    </div>
     
-    <div v-show="mostrarMensagemParabens">
-      Parabéns! Todos os itens foram descartados corretamente!
+    
+    <div v-show="mostrarMensagemParabens" class="imagem-parabens">
+
+      
+           
     </div>
   </div>
 </template>
@@ -91,10 +100,42 @@ export default {
   align-items: center;
   height: 100vh;
   background-color: #f0f0f0;
+
+  background-image: url("@/assets/background.png");
+  background-size: cover; /* Ajusta o tamanho da imagem para cobrir o elemento */
+  background-position: center; /* Centraliza a imagem */
 }
 
 .pontuacao {
   font-size: 24px;
   margin-bottom: 20px;
 }
+
+.lixeiras {
+  display: flex;
+  justify-content: space-around; /* ou outro alinhamento adequado */
+  margin-bottom: 20px; /* ou ajuste de margem conforme necessário */
+}
+
+.itens-lixo {
+  display: flex;
+  justify-content: center; /* ou outro alinhamento desejado */
+}
+
+.imagem-parabens {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  height: 50vh;
+  width: 50vw;
+  background-color: #f0f0f0;
+
+  background-image: url("@/assets/Group 576.png");
+  
+  background-size: cover; /* Ajusta o tamanho da imagem para cobrir o elemento */
+  background-position: center; /* Centraliza a imagem */
+
+  
+}
+
 </style>
